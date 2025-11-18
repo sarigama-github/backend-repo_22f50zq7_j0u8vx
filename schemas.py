@@ -1,48 +1,36 @@
 """
-Database Schemas
+Database Schemas for Stock Pulse Analyzer
 
-Define your MongoDB collection schemas here using Pydantic models.
-These schemas are used for data validation in your application.
-
-Each Pydantic model represents a collection in your database.
-Model name is converted to lowercase for the collection name:
-- User -> "user" collection
-- Product -> "product" collection
-- BlogPost -> "blogs" collection
+We define collections for caching ticker analyses and news articles.
+Each Pydantic model corresponds to a collection (lowercased name).
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 
-# Example schemas (replace with your own):
+class Analysis(BaseModel):
+    ticker: str = Field(..., description="Stock ticker symbol, uppercase")
+    price: float
+    change_percent: float
+    support: float
+    resistance: float
+    rsi: float
+    rsi_signal: str
+    macd: float
+    macd_signal: float
+    macd_hist: float
+    ma50: float
+    ma200: float
+    ma_trend: str
+    volume: float
+    volume_trend: str
+    last_updated: Optional[str] = None
 
-class User(BaseModel):
-    """
-    Users collection schema
-    Collection name: "user" (lowercase of class name)
-    """
-    name: str = Field(..., description="Full name")
-    email: str = Field(..., description="Email address")
-    address: str = Field(..., description="Address")
-    age: Optional[int] = Field(None, ge=0, le=120, description="Age in years")
-    is_active: bool = Field(True, description="Whether user is active")
-
-class Product(BaseModel):
-    """
-    Products collection schema
-    Collection name: "product" (lowercase of class name)
-    """
-    title: str = Field(..., description="Product title")
-    description: Optional[str] = Field(None, description="Product description")
-    price: float = Field(..., ge=0, description="Price in dollars")
-    category: str = Field(..., description="Product category")
-    in_stock: bool = Field(True, description="Whether product is in stock")
-
-# Add your own schemas here:
-# --------------------------------------------------
-
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+class Article(BaseModel):
+    ticker: str
+    source: str
+    title: str
+    url: str
+    published: Optional[str] = None
+    summary: Optional[str] = None
+    sentiment: Optional[str] = None
